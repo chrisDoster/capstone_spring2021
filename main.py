@@ -1,17 +1,31 @@
 import tweepy
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
+# TWITTER
 # for cnd243@twitter.com (chris) ; NOTE: I only follow 1 person atm, an author named Ursula K Le Guin
-api_key = "eu0hXaGudKMlb93aAlIbJBYF1"
-api_key_secret = "tywK4Vzses8Pt0GprxWUuDQJ0G3aRKARmBN1cXdO2Kp3r9syTn"
-access_token = "1364394392577056773-HD04xN1RPm8g9uE5jRU5RTZS2kA3w7"
-access_token_secret = "VLbcymTCK8RkvpCdsCwZCyADthXtbbhSClZw6zmnGPVtZ"
+twitter_api_key = "eu0hXaGudKMlb93aAlIbJBYF1"
+twitter_api_key_secret = "tywK4Vzses8Pt0GprxWUuDQJ0G3aRKARmBN1cXdO2Kp3r9syTn"
+twitter_access_token = "1364394392577056773-HD04xN1RPm8g9uE5jRU5RTZS2kA3w7"
+twitter_access_token_secret = "VLbcymTCK8RkvpCdsCwZCyADthXtbbhSClZw6zmnGPVtZ"
 
 # authenticate to twitter
-auth = tweepy.OAuthHandler(api_key, api_key_secret)
-auth.set_access_token(access_token, access_token_secret)
+auth = tweepy.OAuthHandler(twitter_api_key, twitter_api_key_secret)
+auth.set_access_token(twitter_access_token, twitter_access_token_secret)
 
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 tl = api.home_timeline()
 for tweet in tl:
     print(f"{tweet.user.name} said: {tweet.text}")
+
+
+# SPOTIFY
+# for BerndBeats on Spotify
+spotify_client_id = '5e08a41efc354ace994dabdf85a51d7a'
+spotify_client_secret = '6902a7ddcbed4c7b910f4474c94ec4e6'
+uri = 'spotify:track:6JH9yWhgbm0y9iAJhCslNc'
+spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=spotify_client_id, client_secret=spotify_client_secret))
+
+result = spotify.track(uri)
+print(result['name'])

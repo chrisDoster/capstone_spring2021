@@ -24,8 +24,15 @@ for tweet in tl:
 # for BerndBeats on Spotify
 spotify_client_id = '5e08a41efc354ace994dabdf85a51d7a'
 spotify_client_secret = '6902a7ddcbed4c7b910f4474c94ec4e6'
-uri = 'spotify:track:6JH9yWhgbm0y9iAJhCslNc'
+uri = 'spotify:artist:2yEwvVSSSUkcLeSTNyHKh8'
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=spotify_client_id, client_secret=spotify_client_secret))
 
-result = spotify.track(uri)
-print(result['name'])
+results = spotify.artist_top_tracks(uri)
+
+for track in results['tracks'][:10]:
+    print('Track:   ' + track['name'])
+    print('Album:   ' + track['album']['name'])
+    print('Artist:  ' + track['artists'][0]['name'])
+    print()
+#    print('Album:   ' + track['album']['images'][0]['url'])
+#    print()

@@ -1,6 +1,13 @@
+# Twitter Dependencies
 import tweepy
+# Spotify Dependencies
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
+import argparse
+import logging
+import requests
+import json
 
 # TWITTER
 # for cnd243@twitter.com (chris) ; NOTE: I only follow 1 person atm, an author named Ursula K Le Guin
@@ -34,5 +41,32 @@ for track in results['tracks'][:10]:
     print('Album:   ' + track['album']['name'])
     print('Artist:  ' + track['artists'][0]['name'])
     print()
-#    print('Album:   ' + track['album']['images'][0]['url'])
-#    print()
+
+# SPOTIFY
+# Creating recommended playlist
+endpoint_url = "https://api.spotify.com/v1/recommendations?"
+limit = 10
+market = "US"
+seed_genres = "metal"
+myPlaylist = []
+
+query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}'
+response = requests.get(query, headers = {"Content-Type":"application/json", "Authorization":"Bearer BQAouy1e2qF9HYJjiaq46mfiRUtgfgym03FzjEAMvfnZHT41S1bfaHvvsxceXfpfztHTvoT55-55gv3Zfnwg3BNvtTCVVrdWR9YukdDs8v4lvKEBtYaMuv0BiYu8oQCPs9qVPnxVziaU0PYqPrJ0kZjBlhy_Mk36TdLbhWiZl-DKD0I"})
+
+json_response = response.json()
+for i in json_response['tracks']:
+    myPlaylist.append(i)
+    print(f"\"{i['name']}\" by {i['artists'][0]['name']}")
+
+# Creating playlist of recommended songs on spotify account
+# FIX/CHANGE
+my_endpoint_url = "https://api.spotify.com/v1/users/{spotify:user:1263578962}/playlists"
+request_body = json.dumps({
+    "name": "My new playlist of recommended songs",
+    "description": "Hopeful",
+    "public": False
+})
+my_response = requests.post(url = my_endpoint_url, data = request_body, 
+                        headers = {"Content-Type":"application/json", "Authorization":f"Bearer BQAouy1e2qF9HYJjiaq46mfiRUtgfgym03FzjEAMvfnZHT41S1bfaHvvsxceXfpfztHTvoT55-55gv3Zfnwg3BNvtTCVVrdWR9YukdDs8v4lvKEBtYaMuv0BiYu8oQCPs9qVPnxVziaU0PYqPrJ0kZjBlhy_Mk36TdLbhWiZl-DKD0I"})
+
+print(my_response.status_code)

@@ -45,13 +45,15 @@ for track in results['tracks'][:10]:
 # SPOTIFY
 # Creating recommended playlist
 endpoint_url = "https://api.spotify.com/v1/recommendations?"
+token = "BQB9kWtrKpxRk_ZcisXcTER1p6fjdqUHfeDzG4jnf3w4hrdjZY6qmwNtSehTt_tV0-8vLTMZTxI5ggGfdpXZt4g-VAdJYg-2J-tcv0R2B-U80MoywPoLjLBEL6jWXZpZ1QJqTam2rbxSyLiSZc-Rbm2xPB8qCv7n-ngtVEZh13contE"
+user_id = "1263578962"
 limit = 10
 market = "US"
-seed_genres = "metal"
+seed_genres = "rock"
 myPlaylist = []
 
 query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}'
-response = requests.get(query, headers = {"Content-Type":"application/json", "Authorization":"Bearer BQAouy1e2qF9HYJjiaq46mfiRUtgfgym03FzjEAMvfnZHT41S1bfaHvvsxceXfpfztHTvoT55-55gv3Zfnwg3BNvtTCVVrdWR9YukdDs8v4lvKEBtYaMuv0BiYu8oQCPs9qVPnxVziaU0PYqPrJ0kZjBlhy_Mk36TdLbhWiZl-DKD0I"})
+response = requests.get(query, headers = {"Content-Type":"application/json", "Authorization":f"Bearer {token}"})
 
 json_response = response.json()
 for i in json_response['tracks']:
@@ -60,13 +62,24 @@ for i in json_response['tracks']:
 
 # Creating playlist of recommended songs on spotify account
 # FIX/CHANGE
-my_endpoint_url = "https://api.spotify.com/v1/users/{spotify:user:1263578962}/playlists"
+endpoint_url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
 request_body = json.dumps({
-    "name": "My new playlist of recommended songs",
+    "name": "My private playlist",
     "description": "Hopeful",
     "public": False
 })
-my_response = requests.post(url = my_endpoint_url, data = request_body, 
-                        headers = {"Content-Type":"application/json", "Authorization":f"Bearer BQAouy1e2qF9HYJjiaq46mfiRUtgfgym03FzjEAMvfnZHT41S1bfaHvvsxceXfpfztHTvoT55-55gv3Zfnwg3BNvtTCVVrdWR9YukdDs8v4lvKEBtYaMuv0BiYu8oQCPs9qVPnxVziaU0PYqPrJ0kZjBlhy_Mk36TdLbhWiZl-DKD0I"})
+response = requests.post(url = endpoint_url, data = request_body, 
+                        headers = {"Content-Type":"application/json", "Authorization":f"Bearer {token}"})
 
-print(my_response.status_code)
+url = response.json()['external_urls']['spotify']
+print(response.status_code)
+
+# Filling new playlist with recommended songs
+playlist_id = response.json()['id']
+endpoint_url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+request_body = json.dumps({
+    "myPlaylist" : myPlaylist
+})
+
+print(response.status_code)
+print(f'Playlist can be found at {url}')

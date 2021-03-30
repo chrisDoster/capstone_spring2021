@@ -30,12 +30,16 @@ for tweet in tl:
 
 # SPOTIFY
 # for BerndBeats on Spotify
-spotify_client_id = '5e08a41efc354ace994dabdf85a51d7a'
-spotify_client_secret = '6902a7ddcbed4c7b910f4474c94ec4e6'
-token = "BQBtaNCEVOokTUuEsCFQlkTmfBuGbFsr9oxU2TWu8lB-CEh12swcQK4-F9tZ2UZG1OXphC1obTyoUQaC_bnZKc60bdYfhEc_Qjdad9OQqFjyk5ivp099bT96jtcG5ZupvR0gGWzKZpHRwz_qAyZwExl-ffvHHINCtjEEd8NAzco_bCc"
-uri = 'spotify:artist:2yEwvVSSSUkcLeSTNyHKh8'
+spotify_client_id = '7955beeac6734d048ebd62498bb8cd05'
+spotify_client_secret = '96a99012fd0843d39434188e6356fbc6'
+spotify_client_redirect_uri = 'http://localhost:3000'
+user_id = "1263578962"
+scope = 'playlist-modify-private'
+token = util.prompt_for_user_token(user_id, scope, spotify_client_id, spotify_client_secret, spotify_client_redirect_uri)
+spo = spotipy.Spotify(auth = token)
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=spotify_client_id, client_secret=spotify_client_secret))
 
+uri = 'spotify:artist:2yEwvVSSSUkcLeSTNyHKh8'
 results = spotify.artist_top_tracks(uri)
 
 for track in results['tracks'][:10]:
@@ -48,12 +52,10 @@ for track in results['tracks'][:10]:
 # SPOTIFY
 # Creating recommended playlist
 endpoint_url = "https://api.spotify.com/v1/recommendations?"
-user_id = "1263578962"
 limit = 10
 market = "US"
 seed_genres = "rock"
 myPlaylist = []
-sp = spotipy.Spotify()
 
 query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}'
 response = requests.get(query, headers = {"Content-Type":"application/json", "Authorization":f"Bearer {token}"})
@@ -64,7 +66,6 @@ for i in json_response['tracks']:
     print(f"\"{i['name']}\" by {i['artists'][0]['name']}")
 
 # Creating playlist of recommended songs on spotify account
-# FIX/CHANGE
 endpoint_url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
 request_body = json.dumps({
     "name": "My private playlist",
@@ -87,27 +88,16 @@ request_body = json.dumps({
 print(response.status_code)
 print(f'Playlist can be found at {url}')
 
-# Adding tracks to playlist
-myClientId = '7955beeac6734d048ebd62498bb8cd05'
-myClientSecret = '96a99012fd0843d39434188e6356fbc6'
-sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials)
-scope = 'playlist-modify-private'
-token = util.prompt_for_user_token(user_id, scope, myClientId, myClientSecret)
-spo = spotipy.Spotify(auth = token)
 song_id_list = []
 
 for i in json_response['tracks']:
-    #print(i['name'])
-    # artist = i['artists'][0]['name']
-    # track_name = i['name']
-    # print(artist)
-    # print(track_name)
     track_id = spotify.search(q='artist:' + i['artists'][0]['name'] + ' track:' + i['name'], type='track')
-    #print(track_id['tracks']['items'][0]['id'])
-    song_id_list.append(track_id['tracks']['items'][0]['id'])
+    items = track_id['tracks']['items']
+    if len(items) > 0:
+        trackid = items[0]
+    song_id_list.append(trackid['id'])
 
-for i in song_id_list:
-    sp.user_playlist_add_tracks(user_id, playlist_id, i)
+for j in song_id_list:
+    spo.user_playlist_add_tracks(user_id, playlist_id, tracks = [j])
 
 song_id_list.clear()
-#print(f"\"{i['name']}\" by {i['artists'][0]['name']}")

@@ -96,17 +96,22 @@ def create_playlist():
     
     spotify = spotipy.Spotify(auth_manager=auth_manager)
 
-    #token = 'BQD0Q-5PbTr-nMpQ-Y2ODcKKxl7ATarvBAH0Ny8B3lY_BN_gx82uFfpl9iDCAsO1DqYq9Yj6_1NxVWHT6vkCHXSMdsEPavHPHijqskqd6hGu8tGXuzNuC1TzjNuep9BT22KK6JeAiNv4I09192t44z-MPXWISPwxgMPtF-rsZbBVQAo'
-    user_id = '1263578962'
-
-    # Used to find user token & user ID
+    # Used to parse user token from cached file
     cached_file_string = str(cache_handler.get_cached_token())
-    token = cached_file_string[18:196]
+    index_one = 18
+    index_two = cached_file_string.find("'token_type':")
+    token = cached_file_string[index_one:index_two-3]
+
+    # Used to parse user id from spotify.current_user() output
     user_string = str(spotify.current_user())
     index_one = user_string.find("'id':")
     index_two = user_string.find("'images':")
     user_id = user_string[index_one+7:index_two-3]
+
     print(user_id)
+    print(cache_handler.get_cached_token())
+    print(token)
+    print(spotify.current_user())
 
     # Filters for recommendations
     endpoint_url = "https://api.spotify.com/v1/recommendations?"

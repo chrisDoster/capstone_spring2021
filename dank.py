@@ -46,6 +46,7 @@ def index():
 
     cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
     auth_manager = spotipy.oauth2.SpotifyOAuth(scope='playlist-modify-private', cache_handler=cache_handler, show_dialog=True)
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
 
     if request.args.get("code"):
         auth_manager.get_access_token(request.args.get("code"))
@@ -54,14 +55,14 @@ def index():
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         auth_url = auth_manager.get_authorize_url()
-        return f'<h2><a href="{auth_url}">Sign in</a></h2>'
+        return f'<body style="background-color:orange;">' \
+           f'<h1><center><br><br><br><br><br><br>Welcome to BerndBeats!</center></h1>' \
+           f'<h2><center><a href="{auth_url}">Sign in</a></center></h2>' \
 
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return f'<h2>Hi {spotify.me()["display_name"]}, ' \
-           f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
-           f'<a href="/playlists">my playlists</a> | ' \
-           f'<a href="/create_playlist">create new playlists</a> | ' \
-            f'<a href="/current_user">me</a>' \
+    return f'<body style="background-color:orange;"><br><br><br><br>' \
+           f'<h1><center>Hi {spotify.me()["display_name"]}, ' \
+           f'<small><a href="/sign_out">[sign out]<a/></small></center></h1>' \
+           f'<h1><center><a href="/create_playlist">Create New Playlist</a></center></h1>' \
 
 # Sign out Link
 @app.route('/sign_out')
@@ -125,11 +126,12 @@ def create_playlist():
 
     json_response = response.json()
     tracks = json_response.get('items', [])
-    print(tracks)
 
     # Retrieving unique uri's for each recommended track
+    string = ''
     for i, j in enumerate(json_response['tracks']):
         myPlaylist.append(j['uri'])
+        string += j['name'] + ' by ' + j['artists'][0]['name'] + '<br><br>'
         print(myPlaylist[i])
 
     # Creating playlist for the recommended songs
@@ -171,10 +173,9 @@ def create_playlist():
         trackid = ''
         if len(items) > 0:
             trackid = items[0]
+            song_id_list.append(trackid['id'])
         else:
-            print('000000000000000000000000000000000000')   #Testing if there are any items
-        song_id_list.append(trackid['id'])
-        #print(song_id_list[j])
+            create_playlist()
 
     # #Adding each song to the created playlist
     for i in song_id_list:
@@ -182,8 +183,13 @@ def create_playlist():
 
     song_id_list.clear()
 
-    webbrowser.open(f"https://open.spotify.com/playlist/{playlist_id}")
-    return 'OK'
+    #webbrowser.open(f"https://open.spotify.com/playlist/{playlist_id}")
+    print(string)
+    return f'<body style="background-color:orange;"><br><br><br><br>' \
+           f'<h1><center>Hi {spotify.me()["display_name"]}, ' \
+           f'<small><a href="/sign_out">[sign out]<a/></small></center></h1>' \
+           f'<h1><center><a href="/create_playlist">Create New Playlist</a></center></h1>' \
+           f'<center><p>{string}</p></center>' \
 
 if __name__ == '__main__':
     app.run()

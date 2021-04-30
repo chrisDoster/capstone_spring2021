@@ -21,6 +21,7 @@ import moodstate
 import tweetparser
 import userprofile
 
+
 # Token System
 os.environ['SPOTIPY_CLIENT_ID'] = '7955beeac6734d048ebd62498bb8cd05'
 os.environ['SPOTIPY_CLIENT_SECRET'] = '96a99012fd0843d39434188e6356fbc6'
@@ -43,6 +44,7 @@ if not os.path.exists(caches_folder):
 
 def session_cache_path():
     return caches_folder + session.get('uuid')
+
 
 @app.route('/')
 def index():
@@ -122,30 +124,31 @@ def create_playlist(useAF=False):
     seed_genres = "rock"
     myPlaylist = []
     
-    target_danceability=0.9
 
-    query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}&target_dancability={target_danceability}'
+    query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}'
     # algorithm code, commented for performance while testing
-    """if useAF:# find search criteria by mood
+    if useAF:# find search criteria by mood
         user = userprofile.UserProfile()
         tweets = pullTweets()
         mood = moodstate.MoodState.createState(tweets)
         searchCriteria = user.audioFeatureValues(mood)
         seed_genres = user.pickSeedGenres()
         query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}'
-        query += audioFeaturesQuery(searchCriteria)"""
-    #print(f'///QUERY///{query}///QUERY///')
+        query += audioFeaturesQuery(searchCriteria)
     response = requests.get(query, headers = {"Content-Type":"application/json", "Authorization":f"Bearer {token}"})
-    #print(f'///RESPONSE///{response.json()}///RESPONSE///')
 
     json_response = response.json()
-    tracks = json_response.get('items', [])
 
     # Retrieving unique uri's for each recommended track
     string = ''
     for i, j in enumerate(json_response['tracks']):
         myPlaylist.append(j['uri'])
-        string += j['name'] + ' by ' + '<strong>' + j['artists'][0]['name'] + '</strong><br><br>'
+        string += j['name'] + ' by ' + j['artists'][0]['name'] + ' '
+        uri = j['uri']
+        string += f'<a href=/handle_feedback/{uri}/like/{useAF}>Like</a> / '
+        string += f'<a href=/handle_feedback/{uri}/dislike/{useAF}>Dislike</a>'
+        string += '<br><br>'
+        print(myPlaylist[i])
 
     # Creating playlist for the recommended songs
     endpoint_url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
@@ -194,6 +197,18 @@ def create_playlist(useAF=False):
            f'<p><center>{string}</center></p>' \
            f'<h3><center>Here is your <a href="https://open.spotify.com/playlist/{playlist_id}" target="_blank">Spotify Link</a></center></h3>'
             
+
+
+
+@app.route('/handle_feedback/<uri>/<feedback>/<useAF>')
+def handle_feedback(uri=None, feedback=None, useAF=None):
+    if uri==None or feedback==None or useAF==None:
+        print('ERROR ---- Failed to pass uri/feedback/useAF values')
+    else:
+        print('URI:' + uri)
+        print('FEEDBACK: ' + feedback)
+
+        return redirect(f'/create_playlist/{useAF}')
 
 
 

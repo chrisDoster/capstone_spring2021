@@ -13,7 +13,6 @@ from flask import Flask, session, request, redirect
 from flask_session import Session
 # Other Dependencies
 import uuid
-import webbrowser
 import sys
 import logging
 import shutil
@@ -58,14 +57,13 @@ def index():
 
     if request.args.get("code"):
         auth_manager.get_access_token(request.args.get("code"))
-        print(auth_manager.get_access_token(request.args.get("code")))
         return redirect('/')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         auth_url = auth_manager.get_authorize_url()
         return f'<body style="background-color:orange;">' \
            f'<h1><center><br><br><br><br><br><br>Welcome to BerndBeats!</center></h1>' \
-           f'<h2><center><a href="{auth_url}">Sign in</a></center></h2>' \
+           f'<h2><center><a href="{auth_url}">Sign in with Spotify</a></center></h2>' \
 
     return f'<body style="background-color:orange;"><br><br><br><br>' \
            f'<h1><center>Hi {spotify.me()["display_name"]}, ' \
@@ -117,11 +115,6 @@ def create_playlist(useAF=False):
     index_two = user_string.find("'images':")
     user_id = user_string[index_one+7:index_two-3]
 
-    print(user_id)
-    print(cache_handler.get_cached_token())
-    print(token)
-    print(spotify.current_user())
-
     # Filters for recommendations
     endpoint_url = "https://api.spotify.com/v1/recommendations?"
     limit = 10
@@ -141,9 +134,9 @@ def create_playlist(useAF=False):
         seed_genres = user.pickSeedGenres()
         query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}'
         query += audioFeaturesQuery(searchCriteria)"""
-    print(f'///QUERY///{query}///QUERY///')
+    #print(f'///QUERY///{query}///QUERY///')
     response = requests.get(query, headers = {"Content-Type":"application/json", "Authorization":f"Bearer {token}"})
-    print(f'///RESPONSE///{response.json()}///RESPONSE///')
+    #print(f'///RESPONSE///{response.json()}///RESPONSE///')
 
     json_response = response.json()
     tracks = json_response.get('items', [])
@@ -152,8 +145,7 @@ def create_playlist(useAF=False):
     string = ''
     for i, j in enumerate(json_response['tracks']):
         myPlaylist.append(j['uri'])
-        string += j['name'] + ' by ' + j['artists'][0]['name'] + '<br><br>'
-        print(myPlaylist[i])
+        string += j['name'] + ' by ' + '<strong>' + j['artists'][0]['name'] + '</strong><br><br>'
 
     # Creating playlist for the recommended songs
     endpoint_url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
@@ -165,24 +157,10 @@ def create_playlist(useAF=False):
     response = requests.post(url = endpoint_url, data = request_body, 
                             headers = {"Content-Type":"application/json", "Authorization":f"Bearer {token}"})
 
-    print(response.status_code)
     playlist_id = response.json()['id']
-    print(str(playlist_id))
     endpoint_url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
     request_body = json.dumps({
     "myPlaylist" : myPlaylist
-    })
-
-    print(response.status_code)
-
-    # Filling new playlist with recommended songs
-    if playlist_id is None:
-        print('99999999999')
-    else:
-        print(playlist_id)
-    endpoint_url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
-    request_body = json.dumps({
-        "myPlaylist" : myPlaylist
     })
 
     # Getting id for each song
@@ -195,22 +173,27 @@ def create_playlist(useAF=False):
         if len(items) > 0:
             trackid = items[0]
             song_id_list.append(trackid['id'])
-        else:
-            create_playlist()
+
+    if len(song_id_list) == 0:
+
+        return f'<body style="background-color:orange;"><br><br><br><br>' \
+               f'<h1><center>Hi {spotify.me()["display_name"]}, ' \
+               f'<small><a href="/sign_out">[sign out]<a/></small></h1>' \
+               f'<h1><center><a href="/create_playlist/{useAF}">Create New Playlist</a></center></h1>' \
+               f'<p><center>Uh oh something went wrong! Try again!</center></p>' \
 
     # #Adding each song to the created playlist
     for i in song_id_list:
         spotify.user_playlist_add_tracks(spotify.current_user(), playlist_id, tracks= [i])
 
     song_id_list.clear()
-
-    #webbrowser.open(f"https://open.spotify.com/playlist/{playlist_id}")
-    print(string)
     return f'<body style="background-color:orange;"><br><br><br><br>' \
            f'<h1><center>Hi {spotify.me()["display_name"]}, ' \
-           f'<small><a href="/sign_out">[sign out]<a/></small></center></h1>' \
+           f'<small><a href="/sign_out">[sign out]<a/></small></h1>' \
            f'<h1><center><a href="/create_playlist/{useAF}">Create New Playlist</a></center></h1>' \
-           f'<center><p>{string}</p></center>' \
+           f'<p><center>{string}</center></p>' \
+           f'<h3><center>Here is your <a href="https://open.spotify.com/playlist/{playlist_id}" target="_blank">Spotify Link</a></center></h3>'
+            
 
 
 

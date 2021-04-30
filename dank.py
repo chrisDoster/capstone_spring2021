@@ -134,11 +134,12 @@ def create_playlist(useAF=False):
     query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}&target_dancability={target_danceability}'
     # algorithm code, commented for performance while testing
     """if useAF:# find search criteria by mood
-        query = f'{endpoint_url}limit={limit}&market={market}&seed_genres=hip-hop'
         user = userprofile.UserProfile()
         tweets = pullTweets()
         mood = moodstate.MoodState.createState(tweets)
         searchCriteria = user.audioFeatureValues(mood)
+        seed_genres = user.pickSeedGenres()
+        query = f'{endpoint_url}limit={limit}&market={market}&seed_genres={seed_genres}'
         query += audioFeaturesQuery(searchCriteria)"""
     print(f'///QUERY///{query}///QUERY///')
     response = requests.get(query, headers = {"Content-Type":"application/json", "Authorization":f"Bearer {token}"})

@@ -1,6 +1,7 @@
 import moodstate
 import statistics
 import copy
+import random
 
 class UserProfile:
     def __init__(self):
@@ -10,6 +11,15 @@ class UserProfile:
                              'Sadness' : {'dancability':.5, 'energy':.5, 'loudness':.2, 'mode':0, 'accousticness':.5, 'instrumentalness':.5, 'valence':.1},
                              'Surprise' : {'dancability':.6, 'energy':.6, 'loudness':.5, 'mode':0, 'accousticness':.5, 'instrumentalness':.5, 'valence':.5},
                              'Fear' : {'dancability':.5, 'energy':.6, 'loudness':.1, 'mode':0, 'accousticness':.5, 'instrumentalness':.5, 'valence':.5}}
+        self.__genres = ["acoustic","afrobeat","alt-rock","alternative","ambient","anime","black-metal","bluegrass","blues","bossanova","brazil","breakbeat",
+                        "british","cantopop","chicago-house","children","chill","classical","club","comedy","country","dance","dancehall","death-metal","deep-house","detroit-techno",
+                        "disco","disney","drum-and-bass","dub","dubstep","edm","electro","electronic","emo","folk","forro","french","funk","garage","german","gospel",
+                        "goth","grindcore","groove","grunge","guitar","happy","hard-rock","hardcore","hardstyle","heavy-metal","hip-hop","holidays","honky-tonk","house",
+                        "idm","indian","indie","indie-pop","industrial","iranian","j-dance","j-idol","j-pop","j-rock","jazz","k-pop","kids","latin","latino","malay",
+                        "mandopop","metal","metal-misc","metalcore","minimal-techno","movies","mpb","new-age","new-release","opera","pagode","party","philippines-opm",
+                        "piano","pop","pop-film","post-dubstep","power-pop","progressive-house","psych-rock","punk","punk-rock","r-n-b","rainy-day","reggae","reggaeton",
+                        "road-trip","rock","rock-n-roll","rockabilly","romance","sad","salsa","samba","sertanejo","show-tunes","singer-songwriter","ska","sleep","songwriter",
+                        "soul","spanish","study","summer","swedish","synth-pop","tango","techno","trance","trip-hop","turkish","work-out","world-music"]
     
     # helper to build a string representing the column-labels for the preferenceStr method
     def _labelStr(self, pad, leadPad):
@@ -89,6 +99,21 @@ class UserProfile:
         af['instrumentalness'] = self._applyMoodWeights(mood, 'instrumentalness', numTweets)
         af['valence'] = self._applyMoodWeights(mood, 'valence', numTweets)
         return af
+
+    # choose 5 genres to search
+    def pickSeedGenres(self):
+        seedGenres = ''
+        chosen = []
+        maxIndex = len(self.__genres)-1
+        for i in range(5):
+            index = random.randint(0, maxIndex)
+            if self.__genres[index] not in chosen:
+                if chosen:
+                    seedGenres += '%2C'
+                seedGenres += self.__genres[index]
+                chosen.append(self.__genres[index])
+        return seedGenres
+
 
     # updates the preferences table based on feedback that's passed as a parameter
     # @param audiofeatures: an AudioFeatures object from spotify

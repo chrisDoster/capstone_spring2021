@@ -1,0 +1,180 @@
+{
+  "info": {
+    "_postman_id": "e22d373a-9efb-4aca-982f-7c4f65b5ecb3",
+    "name": "BerndBeats",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Details about a user",
+      "_postman_id": "424438b8-d5a1-4507-908a-5b04c85c2ceb",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user?id=-49403156",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user"
+          ],
+          "query": [
+            {
+              "description": "(Required) ID of the user",
+              "key": "id",
+              "value": "-49403156"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://127.0.0.1:5000/",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "acbf183f-0a54-4293-9a10-c043bbfa91bb",
+            "exec": [
+              "pm.test(\"Status test\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Status code is 201\", () => {\r",
+              "  pm.response.to.have.status(405);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Content-Type header is present\", () => {\r",
+              "  pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Cookie JSESSIONID is present\", () => {\r",
+              "  pm.expect(pm.cookies.has('JSESSIONID')).to.be.false;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response time is less than 100ms\", () => {\r",
+              "  pm.expect(pm.response.responseTime).to.be.below(100);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "0b22fb01-fdff-4e20-8b1b-7a6c411c48ca",
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "a13f2a5b-bb5d-403c-9eff-bc8bb2ae008f",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "token": "BQCrkle9n3jVkCRTAXO9GL45W48MGr-S6IHiW0v64339WP9GctGx4Ro5y7LaZtXEftQsdmH4GvLy11ASLq_WYv-xA6QHJW4iFTAGSpi_wD4La-TCzpzI9hIVEw68VJLRKCQ3ZjAVNhRtWN_pcJao3OmgFs2FesIAyRDOdgzsHXYChN2BXQ\", \"token_type\": \"Bearer\", \"expires_in\": 3600, \"refresh_token\": \"AQBzeDzaZFPrjikNEzKV8XEm0Do0Xxcb84gfDPmAeAfQxHjPRVpdGBNzh6Y9iVgG7RDfJ-aF4rGPDR7aAH75wft8GEpg45pRA1Rvgi22IM-GqLou5TERooJGMzYakC-MXJ8"
+          }
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [],
+          "options": {
+            "urlencoded": {}
+          }
+        },
+        "url": "http://127.0.0.1:5000/"
+      },
+      "response": []
+    },
+    {
+      "name": "cnd243@twitter.com",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "90a7161f-a13a-4ccf-8cf0-e6b0b5d49ac1",
+            "exec": [
+              "pm.test(\"Status test\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Status code is 201\", () => {\r",
+              "  pm.response.to.have.status(405);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Content-Type header is present\", () => {\r",
+              "  pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Cookie JSESSIONID is present\", () => {\r",
+              "  pm.expect(pm.cookies.has('JSESSIONID')).to.be.false;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response time is less than 100ms\", () => {\r",
+              "  pm.expect(pm.response.responseTime).to.be.below(100);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "e8786cbd-627c-448c-b287-03dc854a32c9",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "cnd243@twitter.com"
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": {}
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "2f6ee3aa-600e-49bd-a561-a821d336f85c",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "32a3f2f3-fd20-413d-b0b7-1371342531d2",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "3e3f3d38-9c1d-41ea-906d-7e53711535c8",
+      "key": "baseUrl",
+      "value": "http://petstore.swagger.io/v1",
+      "type": "string"
+    }
+  ]
+}

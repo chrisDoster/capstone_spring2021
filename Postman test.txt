@@ -1,0 +1,22 @@
+//Step 1: copy and paste this in test script. 
+//Step 2: send to: http://127.0.0.1:5000/
+//------------------------
+pm.test("Status of connection is active", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Status code matches 201", () => {
+  pm.response.to.have.status(405);
+});
+
+pm.test("Content-Type header is active", () => {
+  pm.response.to.have.header("Content-Type");
+});
+
+pm.test("Cookie JSESSIONID is active", () => {
+  pm.expect(pm.cookies.has('JSESSIONID')).to.be.false;
+});
+
+pm.test("Response time is less than 100ms", () => {
+  pm.expect(pm.response.responseTime).to.be.below(100);
+});

@@ -1,5 +1,7 @@
-//Step 1: copy and paste this in test script. 
-//Step 2: send to: http://127.0.0.1:5000/
+//Step 1: This test will only work if Postman is installed or opened in a browser.
+//Step 2: copy and paste this text file into a test script.
+//Step 3: Have BerndBeats application running.
+//Step 4: send GET or POST request to: http://127.0.0.1:5000/
 //------------------------
 pm.test("Status of connection is active", function () {
     pm.response.to.have.status(200);

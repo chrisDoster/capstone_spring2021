@@ -9,9 +9,11 @@ six==1.15.0
 spotipy==2.17.1
 tweepy==3.10.0
 urllib3==1.26.3
+flask==1.1.2
+flask-session==0.3.2
+keras==1.1.0
 
 h5py==2.9.0
-keras==1.1.0
 numpy==1.16.0
 pandas==0.24.1
 python-dateutil==2.8.0

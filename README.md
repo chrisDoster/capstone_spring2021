@@ -32,3 +32,10 @@ Models (folder): Part of EmotionPredictor dependency
 Postman test.txt: Text file of the test script to put in Postman to test running application (main.py).
 
 Postman_API_test.json: JSON file uploaded from Postman to Github repository.
+
+
+Links:
+EmotionPredictor dependency -
+https://github.com/nikicc/twitter-emotion-recognition
+Project GitHub - 
+https://github.com/chrisDoster/capstone_spring2021
